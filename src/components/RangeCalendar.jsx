@@ -25,10 +25,12 @@ export default function RangeCalendar({
   startDate, 
   endDate, 
   onChangeRange, 
-  bookings = [] 
+  bookings = [],
+  disablePast = false
 }) {
   // Start with default view month (October 2026 based on demo context, or current month)
-  const initialMonth = startDate ? parseISO(startDate) : new Date(2026, 9, 1); // Oct 2026
+  const initialMonth = startDate ? parseISO(startDate) : new Date();
+  const todayStr = format(new Date(), 'yyyy-MM-dd');
   const [currentMonth, setCurrentMonth] = useState(initialMonth);
   const [hoverDate, setHoverDate] = useState(null);
   const [collisionWarning, setCollisionWarning] = useState(null);
@@ -53,9 +55,12 @@ export default function RangeCalendar({
     const dateStr = format(day, 'yyyy-MM-dd');
     
     // Check if clicked date is already booked
+    if (disablePast && dateStr < todayStr) return;
     const conflict = isDateBookedForBus(dateStr, selectedBusId, bookings);
     if (conflict) {
-      setCollisionWarning(`Bus ini sudah dipesan oleh ${conflict.partnerName} (${conflict.bookingCode}) pada tanggal ini.`);
+      setCollisionWarning(conflict.partnerName
+        ? `Bus ini sudah dipesan oleh ${conflict.partnerName} (${conflict.bookingCode}) pada tanggal ini.`
+        : 'Bus ini sudah terisi jadwal pada tanggal ini. Silakan pilih tanggal lain.');
       return;
     }
 
@@ -76,7 +81,7 @@ export default function RangeCalendar({
       const { hasCollision, conflict } = checkRangeCollision(startDate, dateStr, selectedBusId, bookings);
       
       if (hasCollision) {
-        setCollisionWarning(`Rentang tanggal melompati jadwal bentrok: ${conflict.partnerName} (${formatDateIndo(conflict.startDate)} s/d ${formatDateIndo(conflict.endDate)})`);
+        setCollisionWarning(`Rentang tanggal melompati jadwal terisi${conflict.partnerName ? `: ${conflict.partnerName}` : ''} (${formatDateIndo(conflict.startDate)} s/d ${formatDateIndo(conflict.endDate)})`);
         return;
       }
 
@@ -167,7 +172,8 @@ export default function RangeCalendar({
           const dateStr = format(day, 'yyyy-MM-dd');
           const isCurrentMonth = isSameMonth(day, currentMonth);
           const conflict = isDateBookedForBus(dateStr, selectedBusId, bookings);
-          const isConflict = Boolean(conflict);
+          const isPast = disablePast && dateStr < todayStr;
+          const isConflict = Boolean(conflict) || isPast;
 
           const startParsed = startDate ? parseISO(startDate) : null;
           const endParsed = endDate ? parseISO(endDate) : null;
@@ -197,7 +203,9 @@ export default function RangeCalendar({
                 onMouseEnter={() => handleDayMouseEnter(day)}
                 aria-disabled={isConflict}
                 className={`w-full aspect-square rounded-xl text-xs font-medium transition-all flex flex-col items-center justify-center relative select-none ${
-                  isConflict
+                  isPast
+                    ? 'bg-transparent text-slate-300 cursor-not-allowed'
+                    : isConflict
                     ? 'bg-rose-50 border border-rose-200/80 text-rose-400 line-through cursor-not-allowed'
                     : isStart || isEnd
                     ? 'bg-cobalt text-white font-bold shadow-md shadow-cobalt/30 scale-105 z-10'
@@ -211,13 +219,13 @@ export default function RangeCalendar({
                 <span>{format(day, 'd')}</span>
                 
                 {/* Conflict Dot */}
-                {isConflict && (
+                {conflict && (
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500 absolute bottom-1" />
                 )}
               </button>
 
               {/* Tooltip on Hover for Booked Dates */}
-              {isConflict && conflict && (
+              {isConflict && conflict && conflict.partnerName && (
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-30 pointer-events-none w-48 p-2 rounded-xl bg-obsidian text-white text-[11px] shadow-ticket text-center">
                   <div className="font-bold text-ticket-gold">{conflict.partnerName}</div>
                   <div className="text-[10px] text-slate-300">Tujuan: {conflict.destination}</div>

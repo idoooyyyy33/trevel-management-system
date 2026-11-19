@@ -151,3 +151,23 @@ export function generateBookingId() {
   const randomSuffix = Math.floor(100 + Math.random() * 900);
   return `TRV-${dateStr}-${randomSuffix}`;
 }
+
+/**
+ * Cetak satu elemen saja (mis. Surat Jalan di drawer admin) tanpa UI di sekitarnya.
+ */
+export function printElement(element) {
+  if (!element) {
+    window.print();
+    return;
+  }
+  element.classList.add('print-focus-target');
+  document.body.classList.add('print-focus');
+  const cleanup = () => {
+    element.classList.remove('print-focus-target');
+    document.body.classList.remove('print-focus');
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+  window.print();
+  setTimeout(cleanup, 1000);
+}

@@ -28,7 +28,9 @@ trevel-management-system/
 └── src/
     ├── main.jsx               # React 18 createRoot, QueryClientProvider, Sonner Toaster
     ├── App.jsx                # Layout controller, global navigation, optimistic mutations
-    ├── api.js                 # Network layer with Google Apps Script endpoint, 8s timeout, DEMO fallback
+    ├── api.js                 # Client for /api/public/* and /api/admin/* (Identity session aware), AI streaming
+    ├── data/catalog.js        # Fleet, partners & status constants shared by frontend and server
+    ├── admin/                 # Admin panel: AdminApp, AdminLogin, AdminDashboard, ReservationManager, AiAnalyst, Markdown
     ├── utils.js               # IDR currency formatting, date helpers, barcode generator, collision matrix
     ├── styles.css             # Base styles, grid pattern, print stylesheets, ticket notches, rubber stamp
     └── components/
@@ -59,9 +61,13 @@ In `src/utils.js`:
 - `checkRangeCollision(startStr, endStr, busId, bookings)`: Inspects if a selected date interval overlaps any existing booking. If an overlap occurs, the user is blocked from making the reservation.
 - Notice: **Zotopia on 2026-10-23** (`TRV-261023-901`) is specifically reserved for *Mitra Wisata Tour* to serve as a demonstrative collision baseline.
 
-### 3.3. Offline & Local Storage Persistence
-- In `src/api.js`, `fetchSystemData()` checks if the Google Apps Script URL has its placeholder `ID_PENERAPAN_ANDA`. If so, it falls back seamlessly to `DEMO` with local storage synchronization (`STORAGE_KEY_BOOKINGS`).
-- Optimistic updates in `App.jsx` ensure immediate UI responsiveness when a reservation is submitted.
+### 3.3. Backend, Persistence & Access Split
+- **Netlify Server** (`netlify/server/index.ts`, Hono, path `/api/*`) serves all API routes.
+- **Netlify Database** (Postgres via Drizzle, schema in `db/schema.ts`, migrations in `netlify/database/migrations/`) stores the `bookings` table. Demo bookings are seeded by a migration. Never edit applied migrations; add new ones with `npx drizzle-kit generate --name <name>`.
+- **Public site** (`/`): Beranda, Katalog, Cek Jadwal & Pesan. It only receives fleet data and blocked date ranges (`GET /api/public/availability`) — never customer identities or prices. Public submissions (`POST /api/public/bookings`) are stored as `Menunggu Konfirmasi` with a server-computed estimate.
+- **Admin panel** (`/admin`, `src/admin/`): Dashboard, Reservasi (status workflow, price edit, Surat Jalan printing), Input Reservasi, Jadwal Armada, Laporan Eksekutif, AI Analyst. Login uses Netlify Identity (`@netlify/identity`); every `/api/admin/*` route verifies the JWT server-side and requires the `admin` role (or an email listed in the `ADMIN_EMAILS` env var).
+- **AI Analyst** (`POST /api/admin/ai`) streams analysis from the Netlify AI Gateway (Anthropic SDK) using a compact operational summary built from the database.
+- Status values: `Menunggu Konfirmasi`, `Terkonfirmasi`, `Selesai`, `Dibatalkan` (see `src/data/catalog.js`). Cancelled bookings never block dates.
 
 ### 3.4. Printing Support
 The tactile ticket (`TicketPreview.jsx`) includes print CSS defined in `src/styles.css`. Elements with `.no-print` are omitted, and `.print-ticket-root` renders cleanly as an operational travel permit (*Surat Jalan*).

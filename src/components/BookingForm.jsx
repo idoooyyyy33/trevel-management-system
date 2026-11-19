@@ -28,15 +28,17 @@ export default function BookingForm({
   bookings = [], 
   preselectedBusId = null,
   preselectedDestination = '',
-  onBookingSubmitted 
+  onBookingSubmitted,
+  mode = 'public'
 }) {
+  const isAdmin = mode === 'admin';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [confirmedBookingCode, setConfirmedBookingCode] = useState(null);
 
   const initialBusId = preselectedBusId || (fleet[0] ? fleet[0].id : 'zotopia');
   const initialBus = fleet.find(b => b.id === initialBusId) || fleet[0] || {};
-  const initialPartner = partners[0] || {};
+  const initialPartner = (isAdmin && partners[0]) || {};
 
   const { register, handleSubmit, watch, setValue, reset, control, formState: { errors } } = useForm({
     defaultValues: {
@@ -50,6 +52,7 @@ export default function BookingForm({
       partnerName: initialPartner.name || '',
       picName: initialPartner.pic || '',
       picPhone: initialPartner.phone || '',
+      picEmail: '',
 
       startDate: '',
       endDate: '',
@@ -59,8 +62,8 @@ export default function BookingForm({
       passengers: 30,
       
       baseCost: 3500000,
-      tollFuel: 1000000,
-      dealPrice: 4500000,
+      tollFuel: isAdmin ? 1000000 : 0,
+      dealPrice: isAdmin ? 4500000 : 3500000,
       notes: ''
     }
   });
@@ -176,13 +179,20 @@ export default function BookingForm({
       bookings
     );
 
+    if (!isAdmin && (!data.partnerName?.trim() || !data.picName?.trim() || !data.picPhone?.trim())) {
+      toast.error('Lengkapi nama rombongan, penanggung jawab, dan nomor telepon.');
+      return;
+    }
+
     if (hasCollision) {
-      toast.error(`Gagal: Jadwal bertabrakan dengan reservasi ${conflict.partnerName} (${conflict.bookingCode})!`);
+      toast.error(conflict.partnerName
+        ? `Gagal: Jadwal bertabrakan dengan reservasi ${conflict.partnerName} (${conflict.bookingCode})!`
+        : `Armada ${data.busName} sudah terisi pada tanggal tersebut. Silakan pilih tanggal lain.`);
       return;
     }
 
     setIsSubmitting(true);
-    const newBookingCode = generateBookingId();
+    let newBookingCode = generateBookingId();
 
     try {
       const payload = {
@@ -191,12 +201,12 @@ export default function BookingForm({
         bookingCode: newBookingCode,
         endDate: endDateFinal,
         days: data.durationDays,
-        status: 'Terkonfirmasi',
-        createdAt: new Date().toISOString()
+        status: isAdmin ? 'Terkonfirmasi' : 'Menunggu Konfirmasi',
       };
 
       if (onBookingSubmitted) {
-        await onBookingSubmitted(payload);
+        const saved = await onBookingSubmitted(payload);
+        if (saved?.bookingCode) newBookingCode = saved.bookingCode;
       }
 
       setConfirmedBookingCode(newBookingCode);
@@ -209,12 +219,19 @@ export default function BookingForm({
         origin: { y: 0.6 }
       });
 
-      toast.success(`Tiket Resmi ${newBookingCode} Berhasil Diterbitkan!`, {
-        description: `Armada ${data.busName} dijadwalkan untuk ${data.partnerName}`
-      });
+      if (isAdmin) {
+        toast.success(`Tiket Resmi ${newBookingCode} Berhasil Diterbitkan!`, {
+          description: `Armada ${data.busName} dijadwalkan untuk ${data.partnerName}`
+        });
+      } else {
+        toast.success(`Permintaan ${newBookingCode} berhasil dikirim!`, {
+          description: 'Tim reservasi kami akan menghubungi Anda untuk konfirmasi jadwal dan harga final.',
+          duration: 8000
+        });
+      }
 
     } catch (err) {
-      toast.error('Gagal menerbitkan reservasi. Silakan periksa koneksi.');
+      toast.error(err?.message || 'Gagal mengirim reservasi. Silakan periksa koneksi.');
     } finally {
       setIsSubmitting(false);
     }
@@ -230,10 +247,11 @@ export default function BookingForm({
       dailyRate: initialBus.dailyRate,
       busCapacity: initialBus.capacity,
 
-      partnerId: initialPartner.id,
-      partnerName: initialPartner.name,
-      picName: initialPartner.pic,
-      picPhone: initialPartner.phone,
+      partnerId: initialPartner.id || '',
+      partnerName: initialPartner.name || '',
+      picName: initialPartner.pic || '',
+      picPhone: initialPartner.phone || '',
+      picEmail: '',
 
       startDate: '',
       endDate: '',
@@ -242,8 +260,8 @@ export default function BookingForm({
       destination: '',
       passengers: 30,
       baseCost: 3500000,
-      tollFuel: 1000000,
-      dealPrice: 4500000,
+      tollFuel: isAdmin ? 1000000 : 0,
+      dealPrice: isAdmin ? 4500000 : 3500000,
       notes: ''
     });
     toast.info('Formulir reservasi berhasil direset ke draf kosong.');
@@ -256,14 +274,15 @@ export default function BookingForm({
       <div className="space-y-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cobalt/10 text-cobalt text-xs font-bold uppercase tracking-widest">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Interactive Booking Engine & Ticket Generator</span>
+          <span>{isAdmin ? 'Interactive Booking Engine & Ticket Generator' : 'Cek Ketersediaan & Pesan Bus'}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-obsidian tracking-tight">
-          Reservasi Baru & Penerbitan Surat Jalan
+          {isAdmin ? 'Reservasi Baru & Penerbitan Surat Jalan' : 'Pesan Bus Pariwisata Eksekutif'}
         </h1>
         <p className="text-sm sm:text-base text-caption max-w-2xl leading-relaxed">
-          Pemesanan armada bus eksekutif dengan deteksi bentrok jadwal real-time, 
-          kalkulasi biaya transparan, dan pratinjau tiket taktil termal langsung.
+          {isAdmin
+            ? 'Input reservasi langsung oleh admin dengan deteksi bentrok jadwal real-time, harga kesepakatan, dan penerbitan Surat Jalan.'
+            : 'Pilih armada dan tanggal yang masih tersedia, lalu kirim permintaan. Tim reservasi kami mengonfirmasi jadwal & harga final melalui telepon/WhatsApp.'}
         </p>
       </div>
 
@@ -275,6 +294,8 @@ export default function BookingForm({
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
             
+{isAdmin ? (
+<>
             {/* Step 1: Partner Selection */}
             <div className="space-y-3">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between">
@@ -318,6 +339,58 @@ export default function BookingForm({
                 </div>
               </div>
             </div>
+
+</>
+) : (
+<>
+            {/* Step 1 (Publik): Data Pemesan */}
+            <div className="space-y-3">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-cobalt" />
+                  <span>1. Data Pemesan / Rombongan</span>
+                </span>
+                <span className="text-[10px] text-caption font-semibold">Wajib Diisi</span>
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  placeholder="Nama biro / instansi / rombongan"
+                  {...register('partnerName', { required: true })}
+                  className="sm:col-span-2 w-full px-4 py-3 rounded-xl border border-slate-300 bg-white text-obsidian text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-cobalt focus:border-cobalt transition-all"
+                />
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Nama penanggung jawab"
+                    {...register('picName', { required: true })}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 bg-white text-obsidian text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-cobalt focus:border-cobalt transition-all"
+                  />
+                </div>
+                <div className="relative">
+                  <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="tel"
+                    placeholder="No. WhatsApp / telepon"
+                    {...register('picPhone', { required: true })}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 bg-white text-obsidian text-sm font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-cobalt focus:border-cobalt transition-all"
+                  />
+                </div>
+                <input
+                  type="email"
+                  placeholder="Email (opsional)"
+                  {...register('picEmail')}
+                  className="sm:col-span-2 w-full px-4 py-3 rounded-xl border border-slate-300 bg-white text-obsidian text-sm font-medium focus:outline-none focus:ring-2 focus:ring-cobalt focus:border-cobalt transition-all"
+                />
+              </div>
+              {(errors.partnerName || errors.picName || errors.picPhone) && (
+                <p className="text-xs text-alert font-medium">Nama rombongan, penanggung jawab, dan nomor telepon wajib diisi.</p>
+              )}
+            </div>
+
+</>
+)}
 
             {/* Step 2: Bus Fleet Selection */}
             <div className="space-y-3">
@@ -387,6 +460,7 @@ export default function BookingForm({
                 startDate={watchStartDate}
                 endDate={watchEndDate}
                 bookings={bookings}
+                disablePast={!isAdmin}
                 onChangeRange={(start, end) => {
                   setValue('startDate', start);
                   setValue('endDate', end);
@@ -475,6 +549,8 @@ export default function BookingForm({
               </div>
             </div>
 
+{isAdmin ? (
+<>
             {/* Step 6: Cost Breakdown Calculator */}
             <div className="space-y-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
@@ -536,6 +612,28 @@ export default function BookingForm({
               </div>
             </div>
 
+</>
+) : (
+<>
+            {/* Step 6 (Publik): Estimasi Biaya */}
+            <div className="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                <DollarSign className="w-3.5 h-3.5 text-cobalt" />
+                <span>6. Estimasi Biaya Sewa</span>
+              </label>
+              <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-200">
+                <span className="text-slate-600">Sewa bus ({watchDurationDays} Hari x {formatIDR(watchDailyRate)})</span>
+                <span className="font-mono font-extrabold text-lg text-cobalt">{formatIDR(watchAll.baseCost)}</span>
+              </div>
+              <p className="text-[11px] text-caption leading-relaxed">
+                Estimasi belum termasuk BBM, tol, parkir, dan penyeberangan. Harga final dikonfirmasi oleh tim reservasi
+                setelah rute disepakati.
+              </p>
+            </div>
+
+</>
+)}
+
             {/* Special Notes textarea */}
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
@@ -559,12 +657,12 @@ export default function BookingForm({
                 {isSubmitting ? (
                   <>
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Menerbitkan Surat Jalan...</span>
+                    <span>{isAdmin ? 'Menerbitkan Surat Jalan...' : 'Mengirim Permintaan...'}</span>
                   </>
                 ) : (
                   <>
                     <CheckCircle2 className="w-5 h-5 text-emerald-300" />
-                    <span>Konfirmasi & Terbitkan Tiket</span>
+                    <span>{isAdmin ? 'Konfirmasi & Terbitkan Tiket' : 'Kirim Permintaan Reservasi'}</span>
                   </>
                 )}
               </button>
@@ -595,6 +693,7 @@ export default function BookingForm({
             isConfirmed={isConfirmed}
             confirmedBookingCode={confirmedBookingCode}
             onPrint={() => window.print()}
+            variant={isAdmin ? 'admin' : 'public'}
           />
         </div>
 

@@ -133,3 +133,84 @@
     page-break-inside: avoid;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Admin Control Center                                                */
+/* ------------------------------------------------------------------ */
+.ai-aurora {
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(59, 130, 246, 0.35) 0%, transparent 55%),
+    radial-gradient(90% 70% at 100% 0%, rgba(139, 92, 246, 0.30) 0%, transparent 55%),
+    radial-gradient(80% 60% at 50% 120%, rgba(245, 158, 11, 0.22) 0%, transparent 60%),
+    #0B132B;
+}
+
+.ai-caret::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: #1D4ED8;
+  animation: ai-blink 1s steps(2, start) infinite;
+}
+
+@keyframes ai-blink {
+  to { visibility: hidden; }
+}
+
+.ai-prose h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #0B132B;
+  margin-top: 1.4rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px dashed #CBD5E1;
+}
+.ai-prose h2:first-child { margin-top: 0; }
+.ai-prose h3 {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #1C2541;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+}
+.ai-prose p { margin: 0.45rem 0; line-height: 1.7; }
+.ai-prose ul, .ai-prose ol { margin: 0.4rem 0 0.6rem; padding-left: 1.25rem; }
+.ai-prose ul { list-style: disc; }
+.ai-prose ol { list-style: decimal; }
+.ai-prose li { margin: 0.25rem 0; line-height: 1.65; }
+.ai-prose li::marker { color: #1D4ED8; font-weight: 700; }
+.ai-prose strong { color: #0B132B; font-weight: 700; }
+.ai-prose code {
+  font-size: 0.8em;
+  padding: 0.1em 0.35em;
+  border-radius: 0.35rem;
+  background: #EEF2FF;
+  color: #1E40AF;
+}
+.ai-prose blockquote {
+  margin: 0.6rem 0;
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid #D97706;
+  background: #FFFBEB;
+  border-radius: 0 0.75rem 0.75rem 0;
+  color: #92400E;
+}
+
+/* Cetak hanya elemen terpilih (Surat Jalan dari drawer admin / laporan AI) */
+@media print {
+  body.print-focus * { visibility: hidden !important; }
+  body.print-focus .print-focus-target,
+  body.print-focus .print-focus-target * { visibility: visible !important; }
+  body.print-focus .print-focus-target {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+}
