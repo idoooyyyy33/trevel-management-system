@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-grid: #E5E9F0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #F8F9FA;
+    color: #0B132B;
+    background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -19px -19px;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  code, pre, .font-mono, .tabular-nums {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Tactile Ticket Notches and Perforation */
+.ticket-container {
+  position: relative;
+  background-color: #FFFFFF;
+}
+
+.ticket-notch-left,
+.ticket-notch-right {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: #F8F9FA;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  box-shadow: inset 0 2px 4px rgba(11, 19, 43, 0.08);
+}
+
+.ticket-notch-left {
+  left: -12px;
+}
+
+.ticket-notch-right {
+  right: -12px;
+}
+
+.ticket-perforation {
+  border-top: 2px dashed #CBD5E1;
+  position: relative;
+  margin: 0 12px;
+}
+
+/* Rubber Stamp Styling with tactile texture effect */
+.stamp-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-width: 3.5px;
+  border-style: solid;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-radius: 8px;
+  padding: 6px 14px;
+  user-select: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.stamp-draft {
+  border-color: #D97706;
+  color: #B45309;
+  background-color: rgba(254, 243, 199, 0.55);
+}
+
+.stamp-confirmed {
+  border-color: #059669;
+  color: #047857;
+  background-color: rgba(209, 250, 229, 0.65);
+}
+
+/* Print Stylesheet for Surat Jalan */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    background-image: none !important;
+    color: #000000 !important;
+    padding: 0 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-ticket-root {
+    box-shadow: none !important;
+    border: 1px solid #111827 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    page-break-inside: avoid;
+  }
+}
