@@ -94,14 +94,17 @@ function PublicSite() {
       </main>
 
       {/* Footer Editorial */}
-      <footer className="mt-20 border-t border-slate-200 bg-surface text-obsidian no-print">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <footer className="relative overflow-hidden mt-20 border-t border-slate-200/80 bg-gradient-to-br from-white via-blue-50 to-emerald-50 text-obsidian no-print">
+        <div className="pointer-events-none absolute -top-32 right-0 w-[28rem] h-[28rem] rounded-full bg-cobalt-glow/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -left-20 w-[26rem] h-[26rem] rounded-full bg-terminal-light/15 blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cobalt/40 to-transparent" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             
             {/* Brand column */}
             <div className="space-y-3 md:col-span-1">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-obsidian flex items-center justify-center text-white">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cobalt to-terminal flex items-center justify-center text-white shadow-md shadow-cobalt/20">
                   <Bus className="w-4 h-4" />
                 </div>
                 <span className="font-display font-extrabold text-xl text-obsidian tracking-tight">
@@ -160,7 +163,7 @@ function PublicSite() {
 
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
+          <div className="mt-8 pt-6 border-t border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
             <div>
               © 2026 PO. Trevel Wisata Nusantara. Hak Cipta Dilindungi Undang-Undang.
             </div>
