@@ -48,19 +48,19 @@ export default function SeatMapModal({ isOpen, onClose, bus, onSelectBusForBooki
           className="relative bg-surface rounded-3xl shadow-2xl border border-slate-200 w-full max-w-3xl overflow-hidden z-10 my-8"
         >
           {/* Header */}
-          <div className="px-6 py-4 bg-gradient-to-r from-blue-50 via-white to-emerald-50 text-obsidian flex items-center justify-between border-b border-slate-200">
+          <div className="px-6 py-4 bg-obsidian text-white flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-cobalt flex items-center justify-center">
-                <Armchair className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-xl bg-cobalt flex items-center justify-center text-white shadow-sm">
+                <Armchair className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="font-display font-bold text-lg leading-tight flex items-center gap-2">
                   <span>Denah Kabin: {bus.name}</span>
-                  <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">
+                  <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-white/10 border border-white/20 text-slate-200">
                     {bus.plateNumber}
                   </span>
                 </h3>
-                <p className="text-xs text-caption">
+                <p className="text-xs text-slate-400">
                   Konfigurasi 33 Kursi Eksekutif (2-2 Formasi + 5 Sofa Belakang)
                 </p>
               </div>
@@ -68,7 +68,7 @@ export default function SeatMapModal({ isOpen, onClose, bus, onSelectBusForBooki
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-obsidian transition-colors"
+              className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
