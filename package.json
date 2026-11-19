@@ -9,10 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.10.0",
+    "@netlify/database": "^2.0.3",
+    "@netlify/identity": "^2.0.1",
+    "@netlify/server": "^0.1.6",
     "@tanstack/react-query": "^5.59.0",
     "canvas-confetti": "^1.9.3",
     "date-fns": "^3.6.0",
+    "drizzle-orm": "^1.0.0-beta.22",
     "framer-motion": "^11.11.9",
+    "hono": "^4.13.19",
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -23,6 +29,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^1.0.0-beta.22",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "vite": "^5.4.8"

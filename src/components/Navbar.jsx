@@ -14,7 +14,7 @@ import {
   X
 } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, isDemo, isSyncing, onSync }) {
+export default function Navbar({ activeTab, setActiveTab }) {
   const [currentTime, setCurrentTime] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -41,9 +41,7 @@ export default function Navbar({ activeTab, setActiveTab, isDemo, isSyncing, onS
   const navItems = [
     { id: 'beranda', label: 'Beranda', icon: Home, badge: null },
     { id: 'katalog', label: 'Katalog Bus', icon: Bus, badge: '2 Unit' },
-    { id: 'reservasi', label: 'Reservasi Baru', icon: Ticket, badge: 'Live' },
-    { id: 'jadwal', label: 'Jadwal & Riwayat', icon: Calendar, badge: null },
-    { id: 'rekap', label: 'Executive Recap', icon: BarChart3, badge: 'KPI' },
+    { id: 'reservasi', label: 'Cek Jadwal & Pesan', icon: Ticket, badge: 'Live' },
   ];
 
   const handleNavClick = (id) => {
@@ -121,29 +119,13 @@ export default function Navbar({ activeTab, setActiveTab, isDemo, isSyncing, onS
               <span className="tabular-nums tracking-wide">{currentTime || '00:00:00 WIB'}</span>
             </div>
 
-            {/* Server / Demo Mode Badge */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-semibold select-none bg-emerald-50 border-emerald-200/70 text-emerald-700">
-              <span className="relative flex h-2 w-2">
-                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                  isDemo ? 'bg-amber-400' : 'bg-emerald-400'
-                }`} />
-                <span className={`relative inline-flex rounded-full h-2 w-2 ${
-                  isDemo ? 'bg-amber-500' : 'bg-emerald-600'
-                }`} />
-              </span>
-              <span className="hidden sm:inline">
-                {isDemo ? 'Demo Mode' : 'Server Online'}
-              </span>
-            </div>
-
-            {/* Sync Data Button */}
+            {/* CTA Pesan */}
             <button
-              onClick={onSync}
-              disabled={isSyncing}
-              title="Sinkronisasi Data"
-              className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-obsidian border border-slate-200 transition-all active:scale-95 disabled:opacity-50"
+              onClick={() => handleNavClick('reservasi')}
+              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-cobalt hover:bg-cobalt-hover text-white text-xs font-bold transition-all active:scale-95 shadow-sm shadow-cobalt/30"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-cobalt' : 'text-slate-600'}`} />
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Pesan Sekarang</span>
             </button>
 
             {/* Mobile Menu Toggle Button */}

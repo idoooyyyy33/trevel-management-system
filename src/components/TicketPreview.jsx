@@ -19,8 +19,10 @@ export default function TicketPreview({
   formData, 
   isConfirmed = false, 
   confirmedBookingCode = null,
-  onPrint = null
+  onPrint = null,
+  variant = 'admin'
 }) {
+  const isPublic = variant === 'public';
   const currentBookingCode = confirmedBookingCode || 'TRV-DRAFT-XXXX';
   const barcodeBars = generateBarcodeBars(currentBookingCode);
 
@@ -41,7 +43,7 @@ export default function TicketPreview({
         <div className="flex items-center gap-2">
           <FileText className="w-4 h-4 text-cobalt" />
           <span className="text-xs font-bold uppercase tracking-wider text-obsidian">
-            Pratinjau Tiket Fisik & Surat Jalan
+            {isPublic ? 'Pratinjau Bukti Permintaan Reservasi' : 'Pratinjau Tiket Fisik & Surat Jalan'}
           </span>
         </div>
         <button
@@ -50,7 +52,7 @@ export default function TicketPreview({
           className="px-3 py-1.5 rounded-lg border border-slate-300 hover:border-obsidian bg-white hover:bg-slate-50 text-obsidian text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
         >
           <Printer className="w-3.5 h-3.5 text-cobalt" />
-          <span>Cetak Surat Jalan</span>
+          <span>{isPublic ? 'Cetak Bukti' : 'Cetak Surat Jalan'}</span>
         </button>
       </div>
 
@@ -69,10 +71,10 @@ export default function TicketPreview({
                 <span>PO. TREVEL WISATA NUSANTARA</span>
               </div>
               <h3 className="text-xl font-display font-black tracking-tight text-white mt-0.5">
-                SURAT JALAN & TIKET DINAS
+                {isPublic ? 'BUKTI PERMINTAAN RESERVASI' : 'SURAT JALAN & TIKET DINAS'}
               </h3>
               <p className="text-[11px] text-slate-300">
-                Dokumen Resmi Operasional Angkutan Pariwisata
+                {isPublic ? 'Menunggu konfirmasi tim reservasi PO. Trevel' : 'Dokumen Resmi Operasional Angkutan Pariwisata'}
               </p>
             </div>
 
@@ -105,11 +107,11 @@ export default function TicketPreview({
                     damping: 14,
                     mass: 0.8
                   }}
-                  className="stamp-badge stamp-confirmed"
+                  className={`stamp-badge ${isPublic ? 'stamp-draft' : 'stamp-confirmed'}`}
                 >
                   <div className="text-center">
                     <div className="text-[12px] font-black tracking-widest leading-none">
-                      TERKONFIRMASI
+                      {isPublic ? 'TERKIRIM' : 'TERKONFIRMASI'}
                     </div>
                     <div className="text-[9px] font-mono tracking-tight opacity-90 mt-0.5">
                       RESERVED #{currentBookingCode.slice(-4)}

@@ -41,8 +41,8 @@ export default function ScheduleView({
   const [sortDirection, setSortDirection] = useState('desc'); // 'asc' | 'desc'
   const [selectedGanttBooking, setSelectedGanttBooking] = useState(null);
 
-  // 30 Days timeline starting from 2026-10-20 (covers the prime October-November 2026 demo bookings)
-  const ganttStartBase = useMemo(() => new Date(2026, 9, 20), []);
+  // Timeline 30 hari dimulai 3 hari sebelum hari ini
+  const ganttStartBase = useMemo(() => addDays(new Date(new Date().setHours(0, 0, 0, 0)), -3), []);
   const ganttDays = useMemo(() => {
     const days = [];
     for (let i = 0; i < 30; i++) {

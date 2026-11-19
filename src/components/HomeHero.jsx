@@ -140,11 +140,11 @@ export default function HomeHero({ onSelectTab, onQuickBookDestination }) {
             </button>
 
             <button
-              onClick={() => onSelectTab('jadwal')}
+              onClick={() => onSelectTab('katalog')}
               className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition-all duration-200 border border-white/20 backdrop-blur-md flex items-center gap-2"
             >
               <Calendar className="w-4 h-4 text-ticket-gold" />
-              <span>Lihat Jadwal Keberangkatan</span>
+              <span>Lihat Armada Kami</span>
             </button>
           </div>
         </div>
