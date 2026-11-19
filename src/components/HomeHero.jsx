@@ -109,21 +109,26 @@ export default function HomeHero({ onSelectTab, onQuickBookDestination }) {
     <div className="space-y-16 py-6 pb-20">
       
       {/* Editorial Hero Header */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-obsidian via-obsidian-light to-obsidian text-white p-8 sm:p-12 lg:p-16 border border-obsidian/30 shadow-ticket">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-blue-50 to-emerald-50 text-obsidian p-8 sm:p-12 lg:p-16 border border-white shadow-tactile ring-1 ring-slate-200/70">
+        {/* Soft color glows */}
+        <div className="pointer-events-none absolute -top-32 -right-24 w-[28rem] h-[28rem] rounded-full bg-cobalt-glow/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -left-24 w-[26rem] h-[26rem] rounded-full bg-terminal-light/20 blur-3xl" />
+        <div className="pointer-events-none absolute top-1/3 right-1/4 w-60 h-60 rounded-full bg-ticket-gold/10 blur-3xl" />
         {/* Decorative Grid Lines */}
-        <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.35] bg-[linear-gradient(to_right,#CBD5E1_1px,transparent_1px),linear-gradient(to_bottom,#CBD5E1_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_at_top_left,black_30%,transparent_75%)]" />
         
         <div className="relative z-10 max-w-4xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-slate-200">
-            <Sparkles className="w-3.5 h-3.5 text-ticket-gold" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-slate-200 shadow-sm text-xs font-semibold text-slate-600">
+            <Sparkles className="w-3.5 h-3.5 text-ticket-amber" />
             <span>High-End Swiss Transit Standard & Executive Charter</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-[1.08]">
-            Standar Baru Perjalanan Wisata di Jawa Timur & Bali.
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-tight leading-[1.08] text-obsidian">
+            Standar Baru Perjalanan Wisata di{' '}
+            <span className="bg-gradient-to-r from-cobalt to-terminal bg-clip-text text-transparent">Jawa Timur & Bali.</span>
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-300 font-normal max-w-2xl leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 font-normal max-w-2xl leading-relaxed">
             Menghadirkan layanan transportasi bus pariwisata eksekutif dengan armada karoseri terkini, 
             kabin kedap suara bersuspensi udara murni, komitmen keselamatan nol insiden, 
             dan transparansi reservasi digital real-time untuk biro perjalanan profesional.
@@ -141,25 +146,25 @@ export default function HomeHero({ onSelectTab, onQuickBookDestination }) {
 
             <button
               onClick={() => onSelectTab('katalog')}
-              className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition-all duration-200 border border-white/20 backdrop-blur-md flex items-center gap-2"
+              className="px-6 py-3.5 rounded-xl bg-white/80 hover:bg-white text-obsidian font-semibold text-sm transition-all duration-200 border border-slate-200 hover:border-slate-300 shadow-sm backdrop-blur-md flex items-center gap-2"
             >
-              <Calendar className="w-4 h-4 text-ticket-gold" />
+              <Calendar className="w-4 h-4 text-ticket-amber" />
               <span>Lihat Armada Kami</span>
             </button>
           </div>
         </div>
 
         {/* Floating Fleet Badge */}
-        <div className="mt-10 pt-8 border-t border-white/10 grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="relative z-10 mt-10 pt-8 border-t border-slate-200/80 grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((item, idx) => (
             <div key={idx} className="space-y-1">
-              <div className="text-2xl sm:text-3xl font-display font-extrabold text-white tracking-tight">
+              <div className="text-2xl sm:text-3xl font-display font-extrabold text-obsidian tracking-tight">
                 {item.value}
               </div>
-              <div className="text-xs font-bold uppercase tracking-wider text-ticket-gold">
+              <div className="text-xs font-bold uppercase tracking-wider text-cobalt">
                 {item.label}
               </div>
-              <div className="text-[11px] text-slate-400">
+              <div className="text-[11px] text-caption">
                 {item.sub}
               </div>
             </div>
@@ -278,17 +283,20 @@ export default function HomeHero({ onSelectTab, onQuickBookDestination }) {
       </section>
 
       {/* Safety First & Crew SOP Section */}
-      <section className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 border border-slate-800 shadow-tactile relative overflow-hidden">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-white to-blue-50 text-obsidian p-8 sm:p-12 border border-white ring-1 ring-slate-200/70 shadow-tactile">
+        <div className="pointer-events-none absolute -top-28 -left-20 w-[24rem] h-[24rem] rounded-full bg-terminal-light/20 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -right-20 w-[26rem] h-[26rem] rounded-full bg-cobalt-glow/15 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0 opacity-30 bg-[linear-gradient(to_right,#CBD5E1_1px,transparent_1px),linear-gradient(to_bottom,#CBD5E1_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_at_bottom_right,black_25%,transparent_70%)]" />
         <div className="relative z-10 space-y-8">
           <div className="max-w-2xl space-y-2">
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-400">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700">
               <ShieldCheck className="w-4 h-4" />
               <span>Safety First Standard Operating Procedure</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-display font-bold">
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-obsidian">
               Komitmen Nol Insiden & Kru Profesional
             </h2>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
               Keselamatan penumpang adalah prioritas mutlak PO. Trevel. Kami menerapkan 4 pilar pengawasan operasional yang tidak dapat dinegosiasikan.
             </p>
           </div>
@@ -297,14 +305,14 @@ export default function HomeHero({ onSelectTab, onQuickBookDestination }) {
             {safetyPillars.map((p, idx) => {
               const Icon = p.icon;
               return (
-                <div key={idx} className="bg-white/5 rounded-2xl p-5 border border-white/10 space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-cobalt/20 border border-cobalt/40 flex items-center justify-center text-cobalt-light">
+                <div key={idx} className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-tactile hover:-translate-y-0.5 transition-all duration-200 space-y-3">
+                  <div className="w-10 h-10 rounded-xl bg-cobalt/10 border border-cobalt/20 flex items-center justify-center text-cobalt">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="font-display font-bold text-sm text-white">
+                  <h3 className="font-display font-bold text-sm text-obsidian">
                     {p.title}
                   </h3>
-                  <p className="text-xs text-slate-400 leading-relaxed">
+                  <p className="text-xs text-slate-600 leading-relaxed">
                     {p.desc}
                   </p>
                 </div>
@@ -312,12 +320,12 @@ export default function HomeHero({ onSelectTab, onQuickBookDestination }) {
             })}
           </div>
 
-          <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
+          <div className="p-4 rounded-xl bg-white/80 backdrop-blur-sm border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>Seluruh dokumen armada (STNK, Trayek Wisata, Uji KIR Elektronik Blue) dapat diperiksa langsung di kantor operasional.</span>
             </div>
-            <div className="font-mono text-slate-400 text-[11px] shrink-0">
+            <div className="font-mono text-emerald-700 text-[11px] shrink-0 px-2 py-1 rounded-md bg-emerald-50 border border-emerald-100">
               DISPERHUB JATIM CERTIFIED #2026-TRV
             </div>
           </div>
